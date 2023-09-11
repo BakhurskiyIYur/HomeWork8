@@ -1,12 +1,24 @@
 # Домашнее задание №8 (Тема "Настройка PostgreSQL")
 
-  > <img src="pic/1.JPG" align="center" />
-
 Описание/Пошаговая инструкция выполнения домашнего задания:
 
 * 1 Развернуть виртуальную машину любым удобным способом
 * 2 Поставить на неё PostgreSQL 15 любым способом
+  > <img src="pic/2_1.JPG" align="center" />
 * 3 Настроить кластер PostgreSQL 15 на максимальную производительность не обращая внимание на возможные проблемы с надежностью в случае аварийной перезагрузки виртуальной машины
+
+  > <img src="pic/3_2.JPG" align="center" />
+
+
+ > <img src="pic/3_checkpoint_timeout.JPG" align="center" />
+ > <img src="pic/3_effective_cache_size.JPG" align="center" />
+ > <img src="pic/3_maintenance_work_mem.JPG" align="center" />
+ > <img src="pic/3_max_connections.JPG" align="center" />
+ > <img src="pic/3_max_wal_size.JPG" align="center" />
+ > <img src="pic/3_min_wal_size.JPG" align="center" />
+ > <img src="pic/3_shared_buffers.JPG" align="center" />
+ > <img src="pic/3_wal_buffers.JPG" align="center" />
+ > <img src="pic/3_work_mem.JPG" align="center" />
 
 ALTER SYSTEM set checkpoint_timeout to '30s'; --сделать создание точек восстановления раз в 20 минут, чтобы на время тестирования процесс создания точек восстановления не пересекался с создаваемой нагрузкой.
 Show wal_buffers; (4MB)
