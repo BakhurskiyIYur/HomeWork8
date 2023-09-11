@@ -6,45 +6,50 @@
 * 2 Поставить на неё PostgreSQL 15 любым способом
   > <img src="pic/2_1.JPG" align="center" />
 * 3 Настроить кластер PostgreSQL 15 на максимальную производительность не обращая внимание на возможные проблемы с надежностью в случае аварийной перезагрузки виртуальной машины
-
+  
+<br>__*Перед тем, как настраивать кластер PostgreSQL на максимальную производительность, проверим утилитой pgbench, сколько выдает TPS:*__
+  > <img src="pic/3_2.JPG" align="center" />
+  <br>__*-c 50 Количество моделируемых клиентов, т. е. количество одновременных сеансов базы данных.*__
+  <br>__*-j 2 Количество рабочих потоков, клиенты распределяются максимально равномерно по доступным потокам. Значение по умолчанию - 1.*__
+  <br>__*-P 60 Отображает отчет о ходе выполнения каждые 60 секунд.*__
+  <br>__*-T 600 Выполняет тест в течение этого количества секунд.*__
+  <br>__*-U postgres postgres Имя пользователя, к которому необходимо подключиться.*__  
   > <img src="pic/3_2.JPG" align="center" />
 
 
- > <img src="pic/3_checkpoint_timeout.JPG" align="center" />
- > <img src="pic/3_effective_cache_size.JPG" align="center" />
- > <img src="pic/3_maintenance_work_mem.JPG" align="center" />
- > <img src="pic/3_max_connections.JPG" align="center" />
- > <img src="pic/3_max_wal_size.JPG" align="center" />
- > <img src="pic/3_min_wal_size.JPG" align="center" />
- > <img src="pic/3_shared_buffers.JPG" align="center" />
+<br>__*Cделать создание точек восстановления раз в 59 минут, чтобы на время тестирования процесс создания точек восстановления не пересекался с создаваемой нагрузкой.*__ 
+<br>__*Ранее значение параметра было 5 минут.*__
+> <img src="pic/3_checkpoint_timeout.JPG" align="center" />
+
+<br>__*Параметр "wal_buffers", первоначально значение 4 МБ, зададим 16 МБ.*__
  > <img src="pic/3_wal_buffers.JPG" align="center" />
- > <img src="pic/3_work_mem.JPG" align="center" />
 
-ALTER SYSTEM set checkpoint_timeout to '30s'; --сделать создание точек восстановления раз в 20 минут, чтобы на время тестирования процесс создания точек восстановления не пересекался с создаваемой нагрузкой.
-Show wal_buffers; (4MB)
- alter system set wal_buffers to '16MB';
-Show max_wal_size; (1GB)
-alter system set max_wal_size to '5GB';
-Show min_wal_size; (80MB)
-alter system set min_wal_size to '1GB';
-Show checkpoint_timeout; (5min)
-alter system set checkpoint_timeout to '59min';
-Show work_mem; (4MB)
-alter system set work_mem to '6553kb'; --'16MB';
-Show shared_buffers; (128MB)
-alter system set shared_buffers to '1GB';
-Show maintenance_work_mem; (64MB)
-alter system set maintenance_work_mem to '2GB';
-Show Max_connections; (100)
-alter system set Max_connections to '5';
-Show effective_cache_size; (4GB)
-alter system set effective_cache_size to '15GB';
-Show synchronous_commit;
-alter system set synchronous_commit to 'off';
-SELECT pg_reload_conf();
-alter system set autovacuum to 'off';
+<br>__*Параметр "max_wal_size", первоначально значение 1 ГБ, зададим 5 ГБ.*__
+> <img src="pic/3_max_wal_size.JPG" align="center" />
 
-select sourceline, name, setting, applied from pg_file_settings order by applied;
+<br>__*Параметр "min_wal_size", первоначально значение 80 МБ, зададим 1 ГБ.*__
+> <img src="pic/3_min_wal_size.JPG" align="center" />
+
+<br>__*Параметр "work_mem", первоначально значение 4 МБ, зададим 16 МБ.*__
+> <img src="pic/3_work_mem.JPG" align="center" />
+
+<br>__*Параметр "shared_buffers", первоначально значение 128 МБ, зададим 1 ГБ.*__
+> <img src="pic/3_shared_buffers.JPG" align="center" />
+
+<br>__*Параметр "maintenance_work_mem", первоначально значение 64 МБ, зададим 2 ГБ.*__
+> <img src="pic/3_maintenance_work_mem.JPG" align="center" />
+
+<br>__*Параметр "Max_connections", первоначально значение 100, зададим 5.*__
+> <img src="pic/3_max_connections.JPG" align="center" />
+
+<br>__*Параметр "effective_cache_size", первоначально значение 4 ГБ, зададим 15 ГБ.*__
+> <img src="pic/3_effective_cache_size.JPG" align="center" />
+
+<br>__*Параметр "synchronous_commit", первоначально значение "on", зададим "off"*__
+> <img src="pic/4_2_1.JPG" align="center" />
+
+> <img src="pic/4_2_2.JPG" align="center" />
+
 * 4 Нагрузить кластер через утилиту через утилиту pgbench (https://postgrespro.ru/docs/postgrespro/14/pgbench)
 sudo apt-get install postgresql-contrib
 sudo su postgres
